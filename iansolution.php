@@ -10,6 +10,7 @@ $infusionsoft = new \Infusionsoft\Infusionsoft(array(
 	'redirectUri' => 'http://localhost:8888/infusiontest/solution.php',
 ));
 
+
 // By default, the SDK uses the Guzzle HTTP library for requests. To use CURL,
 // you can change the HTTP client by using following line:
 // $infusionsoft->setHttpClient(new \Infusionsoft\Http\CurlClient());
@@ -28,19 +29,29 @@ if (isset($_GET['code']) and !$infusionsoft->getToken()) {
     // Save the serialized token to the current session for subsequent requests
     $_SESSION['token'] = serialize($infusionsoft->getToken());
 }
-if ("contactId" === "3776") {
-	function updateStoreCode($infusionsoft) {
-	  $contactId = $_GET["contactId"];
-	  $storeCode = $_GET["storeCode"];
 
-	  $data = array('_StoreCode' => '12345');
-	  $infusionsoft->contacts('xml')->update($contactId, $data);
-	}
-}
+
+		function updateStoreCode($infusionsoft) {
+			$contactId = $_REQUEST["contactId"];
+				$numberId = array('_numberId');
+				$storeCode = array('_StoreCode');
+			if(empty($storeCode)) {
+			  $data = array('_StoreCode' => '_numberId');
+			  $infusionsoft->contacts('xml')->update($contactId, $data);
+			}
+		}
+echo updateStoreCode('233');
+
+
+
+
+
+
 
 if ($infusionsoft->getToken()) {
 	try {
-		$task = updateStoreCode($infusionsoft);
+	//	$task = updateStoreCode($infusionsoft);
+	$task = updateStoreCode($infusionsoft);
 	}
 	catch (\Infusionsoft\TokenExpiredException $e) {
 		// If the request fails due to an expired access token, we can refresh
@@ -50,6 +61,8 @@ if ($infusionsoft->getToken()) {
 		// Save the serialized token to the current session for subsequent requests
 		$_SESSION['token'] = serialize($infusionsoft->getToken());
 
+		//$task = updateStoreCode($infusionsoft);
+		//$task = retrieveContactdata($infusionsoft);
 		$task = updateStoreCode($infusionsoft);
 	}
 }
